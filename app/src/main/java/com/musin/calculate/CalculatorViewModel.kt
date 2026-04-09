@@ -1,5 +1,6 @@
 package com.musin.calculate
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 
 class CalculatorViewModel {
@@ -11,22 +12,49 @@ class CalculatorViewModel {
         )
     )
 
-    fun processUserInput(input: String) {
-        when(input) {
-            "AC" -> state.value = Display(
-                expression = "",
-                result = ""
-            )
-            "1" -> state.value = Display(
-                expression = input,
-                result = ""
-            )
-            "2" -> state.value = Display(
-                expression = "",
-                result = input
-            )
+    fun processCommand(command: CalculatorCommand) {
+        Log.d("CalculatorViewModel", "command: $command")
+        when(command) {
+            CalculatorCommand.Clear -> {}
+            CalculatorCommand.Evaluate -> {}
+            is CalculatorCommand.Input -> {
+
+            }
         }
     }
+
+}
+
+sealed interface CalculatorCommand {
+
+    data object Clear: CalculatorCommand
+    data object Evaluate: CalculatorCommand
+    data class Input(val symbol: Symbol): CalculatorCommand
+}
+
+enum class Symbol {
+
+    DIGIT_0,
+    DIGIT_1,
+    DIGIT_2,
+    DIGIT_3,
+    DIGIT_4,
+    DIGIT_5,
+    DIGIT_6,
+    DIGIT_7,
+    DIGIT_8,
+    DIGIT_9,
+    ADD,
+    SUBTRACT,
+    MULTIPLY,
+    DIVIDE,
+    PERCENT,
+    POWER,
+    FACTORIAL,
+    SQRT,
+    PI,
+    DOT,
+    PARENTHESIS
 }
 
 data class Display(
