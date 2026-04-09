@@ -26,13 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-var expression = mutableStateOf("45x8")
-var result = mutableStateOf("360")
+val viewmodel = CalculatorViewModel()
 
 @Composable
 fun Calculator(
     modifier: Modifier = Modifier
 ) {
+    val state = viewmodel.state.value
+
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -54,13 +55,13 @@ fun Calculator(
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = expression.value,
+                text = state.expression,
                 fontSize = 36.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Text(
-                text = result.value,
+                text = state.result,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -114,8 +115,7 @@ fun Calculator(
                     .clip(CircleShape)
                     .clickable {
                         Log.d("Calculator", "AC click")
-                        expression.value = ""
-                        result.value = ""
+                        viewmodel.processUserInput("AC")
                     }
                     .background(MaterialTheme.colorScheme.secondary)
                     .aspectRatio(1f),
@@ -291,6 +291,9 @@ fun Calculator(
             Box(
                 modifier = Modifier.weight(1f)
                     .clip(CircleShape)
+                    .clickable {
+                        viewmodel.processUserInput("1")
+                    }
                     .background(MaterialTheme.colorScheme.primary)
                     .aspectRatio(1f),
                 contentAlignment = Alignment.Center
@@ -304,6 +307,9 @@ fun Calculator(
             Box(
                 modifier = Modifier.weight(1f)
                     .clip(CircleShape)
+                    .clickable {
+                        viewmodel.processUserInput("2")
+                    }
                     .background(MaterialTheme.colorScheme.primary)
                     .aspectRatio(1f),
                 contentAlignment = Alignment.Center
