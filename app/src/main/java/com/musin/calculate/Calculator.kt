@@ -67,7 +67,7 @@ fun Calculator(
                         lineHeight = 17.sp,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.errorContainer
                     )
                 }
                 CalculatorState.Initial -> {}

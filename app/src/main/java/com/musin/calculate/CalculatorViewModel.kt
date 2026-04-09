@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.random.Random
+import org.mariuszgromada.math.mxparser.Expression
 
 class CalculatorViewModel: ViewModel() {
 
@@ -22,11 +22,11 @@ class CalculatorViewModel: ViewModel() {
                 _state.value = CalculatorState.Initial
             }
             CalculatorCommand.Evaluate -> {
-                val isError = Random.nextBoolean()
-                _state.value = if (isError) {
-                    CalculatorState.Error("100/0")
+                val result = evaluate()
+                _state.value = if (result != null) {
+                    CalculatorState.Success(result = result)
                 } else {
-                    CalculatorState.Success("100")
+                    CalculatorState.Error(expression = expression)
                 }
             }
             is CalculatorCommand.Input -> {
@@ -38,7 +38,7 @@ class CalculatorViewModel: ViewModel() {
                 expression += symbol
                 _state.value = CalculatorState.Input(
                     expression = expression,
-                    result = "100"
+                    result = evaluate() ?: ""
                 )
             }
         }
@@ -54,6 +54,14 @@ class CalculatorViewModel: ViewModel() {
             openCount > closeCount -> ")"
             else -> "("
         }
+    }
+
+    private fun evaluate(): String? {
+        return expression.replace('x', '*')
+            .replace(',', '.')
+            .let { Expression(it) }
+            .calculate()
+            .takeIf { it.isFinite() } ?.toString()
     }
 
 }
@@ -91,10 +99,10 @@ enum class Symbol(val value: String) {
     DIGIT_7("7"),
     DIGIT_8("8"),
     DIGIT_9("9"),
-    ADD(" + "),
-    SUBTRACT(" - "),
-    MULTIPLY(" * "),
-    DIVIDE(" / "),
+    ADD("+"),
+    SUBTRACT("-"),
+    MULTIPLY("x"),
+    DIVIDE("/"),
     PERCENT("%"),
     POWER("^"),
     FACTORIAL("!"),
